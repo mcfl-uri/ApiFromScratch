@@ -1,20 +1,77 @@
 package cat.api.apifromscratch.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import cat.api.apifromscratch.R
+import cat.api.apifromscratch.api.ApiInterface
+import cat.api.apifromscratch.api.models.AuthorData
+import cat.api.apifromscratch.databinding.FragmentActionsBinding
+import cat.api.apifromscratch.databinding.FragmentGetResultBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class GetResultFragment : Fragment() {
+
+    lateinit var binding: FragmentActionsBinding
+    lateinit var recyclerView: RecyclerView
+    lateinit var recyclerAdapter: RecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_get_result, container, false)
+        val binding = DataBindingUtil.inflate<FragmentGetResultBinding>(
+            inflater,
+            R.layout.fragment_get_result, container, false
+        )
+
+        recyclerView = binding.authorRV
+        recyclerAdapter = RecyclerAdapter(requireContext())
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = recyclerAdapter
+
+        getAllAuthors()
+
+        binding.backButton.setOnClickListener {
+            view?.findNavController()?.navigate(R.id.action_getResultFragment_to_actionsFragment)
+        }
+
+        return binding.root
+    }
+
+    fun getAllAuthors() {
+        val call = ApiInterface.create().getAllAuthors()
+
+        call.enqueue( object : Callback<List<AuthorData>> {
+            override fun onResponse(call: Call<List<AuthorData>>?, response: Response<List<AuthorData>>?) {
+
+                if(response?.body() != null)
+                    recyclerAdapter.setAuthorListItems(response.body()!!)
+            }
+
+            override fun onFailure(call: Call<List<AuthorData>>?, t: Throwable?) {
+                showAlert()
+            }
+        })
+
+    }
+
+    private fun showAlert() {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Error")
+        builder.setMessage("Error al recuperar les dades")
+        builder.setPositiveButton("Tanca", null)
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
     }
 
 }

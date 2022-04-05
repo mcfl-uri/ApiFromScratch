@@ -6,8 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.com.retrofitwithrecyclerviewkotlin.RecyclerAdapter
 import cat.api.apifromscratch.R
 import cat.api.apifromscratch.api.ApiInterface
 import cat.api.apifromscratch.api.models.AuthorData
@@ -19,8 +20,6 @@ import retrofit2.Response
 class ActionsFragment : Fragment() {
 
     lateinit var binding: FragmentActionsBinding
-    lateinit var recyclerView: RecyclerView
-    lateinit var recyclerAdapter: RecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,26 +30,16 @@ class ActionsFragment : Fragment() {
             R.layout.fragment_actions, container, false
         )
 
+        binding.getButton.setOnClickListener {
+            /*if (binding.getInput.text.isNullOrBlank()) {
 
+            } else {
+                //TODO: GET Concret
+            }*/
+            view?.findNavController()?.navigate(R.id.action_actionsFragment_to_getResultFragment)
+        }
 
         return binding.root
-    }
-
-    fun getAllAuthors() {
-        val call = ApiInterface.create().getAllAuthors()
-
-        call.enqueue( object : Callback<List<AuthorData>>{
-            override fun onResponse(call: Call<List<AuthorData>>?, response: Response<List<AuthorData>>?) {
-
-                if(response?.body() != null)
-                    recyclerAdapter.setMovieListItems(response.body()!!)
-            }
-
-            override fun onFailure(call: Call<List<AuthorData>>?, t: Throwable?) {
-
-            }
-        })
-
     }
 
 }

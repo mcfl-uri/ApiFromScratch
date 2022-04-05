@@ -1,4 +1,4 @@
-package app.com.retrofitwithrecyclerviewkotlin
+package cat.api.apifromscratch.ui
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -29,8 +29,8 @@ class RecyclerAdapter(val context: Context) : RecyclerView.Adapter<RecyclerAdapt
         holder.authorId.text = authorList[position].idAutor.toString()
     }
 
-    fun setMovieListItems(movieList: List<AuthorData>) {
-        this.authorList = movieList;
+    fun setAuthorListItems(authorList: List<AuthorData>) {
+        this.authorList = authorList;
         notifyDataSetChanged()
     }
 
