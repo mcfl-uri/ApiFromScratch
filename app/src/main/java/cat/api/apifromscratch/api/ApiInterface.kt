@@ -2,13 +2,31 @@ package cat.api.apifromscratch.api
 
 import cat.api.apifromscratch.api.models.AuthorData
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
+import retrofit2.http.*
 
 interface ApiInterface {
+
     @GET("autores")
     fun getAllAuthors() : Call<List<AuthorData>>
+
+    @GET("autores/{id}")
+    suspend fun getAuthorById(
+        @Path("id") number: Int
+    ): Response<AuthorData>
+
+    /*@GET("autores/")
+    suspend fun getCustomPosts(
+        @Query("userId") userId: Int,
+        @Query("_sort") sort: String,
+        @Query("_order") order: String
+    ): Response<List<AuthorData>>*/
+
+    @Headers("Content-Type: application/json")
+    @POST("autores")
+    fun postAutor(@Body authorData: AuthorData): Call<AuthorData>
 
     companion object {
 
