@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/actionsFragment">
+
+    <fragment
+        android:id="@+id/actionsFragment"
+        android:name="cat.api.apifromscratch.ui.ActionsFragment"
+        android:label="fragment_actions"
+        tools:layout="@layout/fragment_actions" >
+        <action
+            android:id="@+id/action_actionsFragment_to_getResultFragment"
+            app:destination="@id/getResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/getResultFragment"
+        android:name="cat.api.apifromscratch.ui.GetResultFragment"
+        android:label="GetResultFragment"
+        tools:layout="@layout/fragment_get_result">
+        <action
+            android:id="@+id/action_getResultFragment_to_actionsFragment"
+            app:destination="@id/actionsFragment" />
+    </fragment>
+</navigation>
