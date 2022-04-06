@@ -76,17 +76,6 @@ class GetResultFragment : Fragment() {
         val call = ApiInterface.create().getAuthorById(id)
 
         call.enqueue(object : Callback<AuthorData> {
-            /*override fun onResponse(
-                call: Call<List<AuthorData>>,
-                response: Response<List<AuthorData>>
-            ) {
-                if (response?.body() != null)
-                    recyclerAdapter.setAuthorListItems(response.body()!!)
-            }
-
-            override fun onFailure(call: Call<List<AuthorData>>, t: Throwable) {
-                showAlert()
-            }*/
 
             override fun onResponse(call: Call<AuthorData>, response: Response<AuthorData>) {
                 if (response?.body() != null) {
