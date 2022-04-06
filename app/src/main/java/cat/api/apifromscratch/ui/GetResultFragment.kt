@@ -44,10 +44,17 @@ class GetResultFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = recyclerAdapter
 
-        if (model.getId() == -1 && model.getNom() == "")
-            getAllAuthors()
-        else
-            getAuthorById(model.getId())
+        updateRecords()
+
+        recyclerAdapter.setOnItemClickListener(object : RecyclerAdapter.onItemClickListener {
+            override fun onDeleteClick(position: Int) {
+                val idDelete = recyclerAdapter.authorList[position].idAutor
+                if (idDelete != null)
+                    deleteAuthorById(idDelete)
+                updateRecords()
+            }
+
+        })
 
         binding.backButton.setOnClickListener {
             view?.findNavController()?.navigate(R.id.action_getResultFragment_to_actionsFragment)
@@ -89,6 +96,32 @@ class GetResultFragment : Fragment() {
             }
 
         })
+    }
+
+    fun deleteAuthorById(id: Int) {
+        val call = ApiInterface.create().deleteAuthor(id)
+
+        call.enqueue(object: Callback<AuthorData?> {
+
+            override fun onResponse(call: Call<AuthorData?>, response: Response<AuthorData?>) {
+                if (response?.body() != null) {
+                    val tmp: List<AuthorData> = listOf(response.body()!!)
+                    recyclerAdapter.setAuthorListItems(tmp)
+                }
+            }
+
+            override fun onFailure(call: Call<AuthorData?>, t: Throwable) {
+                showAlert()
+            }
+
+        })
+    }
+
+    fun updateRecords() {
+        if (model.getId() == -1 && model.getNom() == "")
+            getAllAuthors()
+        else
+            getAuthorById(model.getId())
     }
 
     private fun showAlert() {
