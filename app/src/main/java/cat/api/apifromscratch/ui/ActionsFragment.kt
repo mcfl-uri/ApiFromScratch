@@ -1,20 +1,21 @@
 package cat.api.apifromscratch.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.isDigitsOnly
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import cat.api.apifromscratch.R
 import cat.api.apifromscratch.api.ApiInterface
 import cat.api.apifromscratch.api.models.AuthorData
 import cat.api.apifromscratch.databinding.FragmentActionsBinding
+import cat.api.apifromscratch.shared.SharedViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +23,7 @@ import retrofit2.Response
 class ActionsFragment : Fragment() {
 
     lateinit var binding: FragmentActionsBinding
+    lateinit var model: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +34,8 @@ class ActionsFragment : Fragment() {
             R.layout.fragment_actions, container, false
         )
 
+        model = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
         binding.postButton.setOnClickListener {
             if (binding.postInput.text.toString().isBlank()) {
                 Toast.makeText(context, "El camp no pot estar buit", Toast.LENGTH_LONG).show()
@@ -41,11 +45,16 @@ class ActionsFragment : Fragment() {
         }
 
         binding.getButton.setOnClickListener {
-            /*if (binding.getInput.text.isNullOrBlank()) {
-
+            if (binding.getInput.text.isNullOrBlank()) {
+                model.setId(-1)
+                model.setNom("")
             } else {
-                //TODO: GET Concret
-            }*/
+                if (binding.getInput.text.toString().isDigitsOnly()) {
+                    model.setId(binding.getInput.text.toString().toInt())
+                } else {
+                    model.setNom(binding.getInput.text.toString())
+                }
+            }
             view?.findNavController()?.navigate(R.id.action_actionsFragment_to_getResultFragment)
         }
 
@@ -55,7 +64,7 @@ class ActionsFragment : Fragment() {
     fun postAuthor(name: String) {
         val call = ApiInterface.create().postAutor(AuthorData(idAutor = null, nomAutor = name))
 
-        call.enqueue( object : Callback<AuthorData> {
+        call.enqueue(object : Callback<AuthorData> {
 
             override fun onResponse(call: Call<AuthorData>, response: Response<AuthorData>) {
                 Toast.makeText(context, "Autor pujat", Toast.LENGTH_LONG).show()

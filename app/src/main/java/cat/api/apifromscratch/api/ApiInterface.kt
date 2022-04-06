@@ -13,9 +13,9 @@ interface ApiInterface {
     fun getAllAuthors() : Call<List<AuthorData>>
 
     @GET("autores/{id}")
-    suspend fun getAuthorById(
+    fun getAuthorById(
         @Path("id") number: Int
-    ): Response<AuthorData>
+    ): Call<AuthorData>
 
     /*@GET("autores/")
     suspend fun getCustomPosts(
